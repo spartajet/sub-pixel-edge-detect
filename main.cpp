@@ -6,7 +6,7 @@ using namespace cv;
 int main()
 {
 	Mat srcImage, grayImage, dstImage;
-	srcImage = imread("imageIn.bmp");
+	srcImage = imread("Org-13-1.Bmp");
 	if (srcImage.empty())
 	{
 		cout << "load error!" << endl;
@@ -38,7 +38,7 @@ int main()
 	if (txt_out != NULL) write_curves_txt(x, y, curve_limits, M, txt_out);
 
 	//imshow("gaussion filtered image", dstImage);
-	waitKey();
+	// waitKey();
 	//system("pause");
 	return 0;
 }

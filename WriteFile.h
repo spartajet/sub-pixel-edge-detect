@@ -15,7 +15,7 @@
 /*----------------------------------------------------------------------------*/
 /* fatal error, print a message to standard error and exit
 */
-static void error(char * msg)
+void error_file(char * msg)
 {
 	fprintf(stderr, "error: %s\n", msg);
 	exit(EXIT_FAILURE);
@@ -24,12 +24,12 @@ static void error(char * msg)
 /*----------------------------------------------------------------------------*/
 /* memory allocation, print an error and exit if fail
 */
-static void * xmalloc(size_t size)
+ void * xmalloc_file(size_t size)
 {
 	void * p;
-	if (size == 0) error("xmalloc input: zero size");
+	if (size == 0) error_file("xmalloc input: zero size");
 	p = malloc(size);
-	if (p == NULL) error("out of memory");
+	if (p == NULL) error_file("out of memory");
 	return p;
 }
 
@@ -50,7 +50,7 @@ static FILE * xfopen(const char * path, const char * mode)
 */
 static int xfclose(FILE * f)
 {
-	if (fclose(f) == EOF) error("unable to close file");
+	if (fclose(f) == EOF) error_file("unable to close file");
 	return 0;
 }
 
@@ -67,7 +67,7 @@ static void skip_whites_and_comments(FILE * f)
 			c = getc(f);
 	} while (c == '#' || isspace(c));
 	if (c != EOF && ungetc(c, f) == EOF)
-		error("unable to 'ungetc' while reading PGM file.");
+		error_file("unable to 'ungetc' while reading PGM file.");
 }
 
 /* read a number in ASCII from a PGM file
@@ -77,11 +77,11 @@ static int get_num(FILE * f)
 	int num, c;
 
 	while (isspace(c = getc(f)));
-	if (!isdigit(c)) error("corrupted PGM or PPM file.");
+	if (!isdigit(c)) error_file("corrupted PGM or PPM file.");
 	num = c - '0';
 	while (isdigit(c = getc(f))) num = 10 * num + c - '0';
 	if (c != EOF && ungetc(c, f) == EOF)
-		error("unable to 'ungetc' while reading PGM file.");
+		error_file("unable to 'ungetc' while reading PGM file.");
 
 	return num;
 }
@@ -99,23 +99,23 @@ double * read_pgm_image(char * name, int * X, int * Y)
 							in some systems, it may behave differently */
 
 	/* read header */
-	if (getc(f) != 'P') error("not a PGM file!");
+	if (getc(f) != 'P') error_file("not a PGM file!");
 	if ((n = getc(f)) == '2') bin = FALSE;
 	else if (n == '5') bin = TRUE;
-	else error("not a PGM file!");
+	else error_file("not a PGM file!");
 	skip_whites_and_comments(f);
 	*X = get_num(f);               /* X size */
 	skip_whites_and_comments(f);
 	*Y = get_num(f);               /* Y size */
 	skip_whites_and_comments(f);
 	depth = get_num(f);            /* pixel depth */
-	if (depth < 0) error("pixel depth < 0, unrecognized PGM file");
-	if (bin && depth > 255) error("pixel depth > 255, unrecognized PGM file");
+	if (depth < 0) error_file("pixel depth < 0, unrecognized PGM file");
+	if (bin && depth > 255) error_file("pixel depth > 255, unrecognized PGM file");
 	/* white before data */
-	if (!isspace(getc(f))) error("corrupted PGM file.");
+	if (!isspace(getc(f))) error_file("corrupted PGM file.");
 
 	/* get memory */
-	image = (double *)xmalloc(*X * *Y * sizeof(double));
+	image = (double *)xmalloc_file(*X * *Y * sizeof(double));
 
 	/* read data */
 	for (i = 0; i<(*X * *Y); i++)
@@ -144,19 +144,19 @@ double * read_asc_file(char * name, int * X, int * Y)
 
 	/* read header */
 	n = fscanf(f, "%d%*c%d%*c%d%*c%d", X, Y, &Z, &C);
-	if (n != 4 || *X <= 0 || *Y <= 0 || Z <= 0 || C <= 0) error("invalid ASC file");
+	if (n != 4 || *X <= 0 || *Y <= 0 || Z <= 0 || C <= 0) error_file("invalid ASC file");
 
 	/* only gray level images are handled */
-	if (Z != 1 || C != 1) error("only single channel ASC files are handled");
+	if (Z != 1 || C != 1) error_file("only single channel ASC files are handled");
 
 	/* get memory */
-	image = (double *)xmalloc(*X * *Y * Z * C * sizeof(double));
+	image = (double *)xmalloc_file(*X * *Y * Z * C * sizeof(double));
 
 	/* read data */
 	for (i = 0; i<(*X * *Y * Z * C); i++)
 	{
 		n = fscanf(f, "%lf", &val);
-		if (n != 1) error("invalid ASC file");
+		if (n != 1) error_file("invalid ASC file");
 		image[i] = val;
 	}
 
@@ -192,10 +192,10 @@ void write_curves_pdf(double * x, double * y, int * curve_limits, int M,
 	int i, j, k;
 
 	/* check input */
-	if (filename == NULL) error("invalid filename in write_curves_pdf");
+	if (filename == NULL) error_file("invalid filename in write_curves_pdf");
 	if (M > 0 && (x == NULL || y == NULL || curve_limits == NULL))
-		error("invalid curves data in write_curves_pdf");
-	if (X <= 0 || Y <= 0) error("invalid image size in write_curves_pdf");
+		error_file("invalid curves data in write_curves_pdf");
+	if (X <= 0 || Y <= 0) error_file("invalid image size in write_curves_pdf");
 
 	/* open file */
 	pdf = xfopen(filename, "wb"); /* open to write as a binary file (b option).
@@ -257,7 +257,7 @@ void write_curves_pdf(double * x, double * y, int * curve_limits, int M,
 
 	/* Contents' stream length object - the use of this indirect object
 	for the stream length allows to generate the PDF file in a single
-	pass, specifying the stream¡¯s length only when its contents have
+	pass, specifying the streamâ€™s length only when its contents have
 	been generated. See "PDF Reference" p.40. */
 	start5 = ftell(pdf);
 	fprintf(pdf, "5 0 obj\n%ld\nendobj\n", stream_len);
@@ -293,9 +293,9 @@ void write_curves_txt(double * x, double * y, int * curve_limits, int M,
 	int i, k;
 
 	/* check input */
-	if (filename == NULL) error("invalid filename in write_curves_txt");
+	if (filename == NULL) error_file("invalid filename in write_curves_txt");
 	if (M > 0 && (x == NULL || y == NULL || curve_limits == NULL))
-		error("invalid curves data in write_curves_txt");
+		error_file("invalid curves data in write_curves_txt");
 
 	/* open file */
 	txt = xfopen(filename, "wb"); /* open to write as a binary file (b option).
@@ -324,10 +324,10 @@ void write_curves_svg(double * x, double * y, int * curve_limits, int M,
 	int i, k;
 
 	/* check input */
-	if (filename == NULL) error("invalid filename in write_curves_svg");
+	if (filename == NULL) error_file("invalid filename in write_curves_svg");
 	if (M > 0 && (x == NULL || y == NULL || curve_limits == NULL))
-		error("invalid curves data in write_curves_svg");
-	if (X <= 0 || Y <= 0) error("invalid image size in write_curves_svg");
+		error_file("invalid curves data in write_curves_svg");
+	if (X <= 0 || Y <= 0) error_file("invalid image size in write_curves_svg");
 
 	/* open file */
 	svg = xfopen(filename, "wb"); /* open to write as a binary file (b option).

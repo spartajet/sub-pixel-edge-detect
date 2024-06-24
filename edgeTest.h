@@ -9,7 +9,7 @@
 
 void error(char * msg);
 void * xmalloc(size_t size);
-int greater(double a, double b);
+int greater_round(double a, double b);
 double dist(double x1, double y1, double x2, double y2);
 void gaussian_kernel(double * kernel, int n, double sigma, double mean);
 void gaussian_filter(uchar* image, uchar* out, int iHeight, int iWidth, double sigma);
