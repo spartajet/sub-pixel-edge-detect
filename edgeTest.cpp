@@ -1,4 +1,5 @@
 #include "edgeTest.h"
+#include "WriteFile.h"
 using namespace std;
 
 #ifndef FALSE
@@ -596,11 +597,12 @@ void devernay(double **x, double **y, int *N, int **curve_limits, int *M,
     if (sigma == 0.0) compute_gradient(Gx, Gy, modG, image, X, Y);
     else {
         gaussian_filter(image, gauss, X, Y, sigma);
+        write_vec_csv(gauss,X*Y,(char*)"gauss.csv");
         compute_gradient(Gx, Gy, modG, gauss, X, Y);
     }
     for (int i = 0; i < X * Y; i++) {
         if (gauss[i] < 255) {
-            printf("%d %d\n", i, gauss[i]);
+//            printf("%d %d\n", i, gauss[i]);
         }
     }
     for (int i = 0; i < X * Y; i++) {
@@ -616,7 +618,7 @@ void devernay(double **x, double **y, int *N, int **curve_limits, int *M,
     thresholds_with_hysteresis(next, prev, modG, X, Y, th_h, th_l);
 
     list_chained_edge_points(x, y, N, curve_limits, M, next, prev, Ex, Ey, X, Y);
-
+    write_vec_csv_double(*y,X * Y,(char *)"y.csv");
     /* free memory */
     free((void *) Gx);
     free((void *) Gy);

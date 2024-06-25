@@ -1,3 +1,7 @@
+
+#ifndef SUB_PIXEL_EDGE_WRITEFILE_AAA_H
+#define SUB_PIXEL_EDGE_WRITEFILE_AAA_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -15,7 +19,7 @@
 /*----------------------------------------------------------------------------*/
 /* fatal error, print a message to standard error and exit
 */
-void error_file(char * msg)
+static void error_file(char * msg)
 {
 	fprintf(stderr, "error: %s\n", msg);
 	exit(EXIT_FAILURE);
@@ -24,7 +28,7 @@ void error_file(char * msg)
 /*----------------------------------------------------------------------------*/
 /* memory allocation, print an error and exit if fail
 */
- void * xmalloc_file(size_t size)
+static  void * xmalloc_file(size_t size)
 {
 	void * p;
 	if (size == 0) error_file((char *)"xmalloc input: zero size");
@@ -88,7 +92,7 @@ static int get_num(FILE * f)
 
 /* read a PGM image file
 */
-double * read_pgm_image(char * name, int * X, int * Y)
+static double * read_pgm_image(char * name, int * X, int * Y)
 {
 	FILE * f;
 	int i, n, depth, bin = FALSE;
@@ -131,7 +135,7 @@ double * read_pgm_image(char * name, int * X, int * Y)
 /*----------------------------------------------------------------------------*/
 /* read a 2D ASC format file
 */
-double * read_asc_file(char * name, int * X, int * Y)
+static double * read_asc_file(char * name, int * X, int * Y)
 {
 	FILE * f;
 	int i, n, Z, C;
@@ -169,7 +173,7 @@ double * read_asc_file(char * name, int * X, int * Y)
 /*----------------------------------------------------------------------------*/
 /* read an image from a file in ASC or PGM formats
 */
-double * read_image(char * name, int * X, int * Y)
+static double * read_image(char * name, int * X, int * Y)
 {
 	int n = (int)strlen(name);
 	char * ext = name + n - 4;
@@ -184,7 +188,7 @@ double * read_image(char * name, int * X, int * Y)
 /* write curves into a PDF file. the output is PDF version 1.4 as described in
 "PDF Reference, third edition" by Adobe Systems Incorporated, 2001
 */
-void write_curves_pdf(double * x, double * y, int * curve_limits, int M,
+static void write_curves_pdf(double * x, double * y, int * curve_limits, int M,
 	char * filename, int X, int Y, double width)
 {
 	FILE * pdf;
@@ -286,7 +290,7 @@ void write_curves_pdf(double * x, double * y, int * curve_limits, int M,
 /*----------------------------------------------------------------------------*/
 /* write curves into a TXT file
 */
-void write_curves_txt(double * x, double * y, int * curve_limits, int M,
+static void write_curves_txt(double * x, double * y, int * curve_limits, int M,
 	char * filename)
 {
 	FILE * txt;
@@ -314,10 +318,28 @@ void write_curves_txt(double * x, double * y, int * curve_limits, int M,
 	xfclose(txt);
 }
 
+static void write_vec_csv(uchar * data,int len,char * filename){
+    FILE * csv;
+    csv= xfopen(filename,"wb");
+    for (int i = 0; i < len; ++i) {
+        fprintf(csv,"%d,%d\n",i,data[i]);
+    }
+    xfclose(csv);
+}
+
+static void write_vec_csv_double(double * data,int len,char * filename){
+    FILE * csv;
+    csv= xfopen(filename,"wb");
+    for (int i = 0; i < len; ++i) {
+        fprintf(csv,"%d,%f\n",i,data[i]);
+    }
+    xfclose(csv);
+}
+
 /*----------------------------------------------------------------------------*/
 /* write curves into a SVG file
 */
-void write_curves_svg(double * x, double * y, int * curve_limits, int M,
+static void write_curves_svg(double * x, double * y, int * curve_limits, int M,
 	char * filename, int X, int Y, double width)
 {
 	FILE * svg;
@@ -356,3 +378,5 @@ void write_curves_svg(double * x, double * y, int * curve_limits, int M,
 	fprintf(svg, "</svg>\n");
 	xfclose(svg);
 }
+
+#endif

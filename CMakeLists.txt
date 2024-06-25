@@ -24,7 +24,8 @@ find_package(OpenCV REQUIRED)
 include_directories( ${OpenCV_INCLUDE_DIRS}  )
 MESSAGE(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
 
-add_executable(sub_pixel_edge_detect main.cpp WriteFile.h edgeTest.cpp edgeTest.h)
+add_executable(sub_pixel_edge_detect main.cpp WriteFile.h edgeTest.cpp edgeTest.h
+        )
 target_link_libraries(sub_pixel_edge_detect ${OpenCV_LIBS})
 #if(NOT TARGET spdlog)
 #    # Stand-alone build

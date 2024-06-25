@@ -1,3 +1,7 @@
+
+#ifndef SUB_PIXEL_EDGE_DETECT_EDGETEST_H
+#define SUB_PIXEL_EDGE_DETECT_EDGETEST_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -26,9 +30,4 @@ void list_chained_edge_points(double ** x, double ** y, int * N,int ** curve_lim
 void devernay(double ** x, double ** y, int * N, int ** curve_limits, int * M,
 	uchar * image, uchar * gauss, int X, int Y, double sigma, double th_h, double th_l);
 
-////---------
-//void GetGuassFilter(double* pfGaussFilter, const int iFilterHeight, const int iFilterWidth, const double fSigma);
-//void GaussFilt2D(uchar* pSrc, uchar* pDst, const int iHeight, const int iWidth,
-//	const int iFilterHeight, const int iFilterWidth, const double fSigma);
-//void GaussFilt2DFull(uchar* pSrc, uchar* pDst, const int iHeight, const int iWidth,
-//	const int iFilterHeight, const int iFilterWidth, const double fSigma);
+#endif
