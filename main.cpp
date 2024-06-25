@@ -34,6 +34,7 @@ int main()
 
 	//imshow("input image", grayImage);
 	devernay(&x, &y, &N, &curve_limits, &M, pSrc, pDst, iWidth, iHeight, S, H, L);
+	printf("%d,%d\n", N, M);
 	if (pdf_out != NULL) write_curves_pdf(x, y, curve_limits, M, pdf_out, iWidth, iHeight, W);
 	if (txt_out != NULL) write_curves_txt(x, y, curve_limits, M, txt_out);
 
