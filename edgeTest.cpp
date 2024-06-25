@@ -23,9 +23,9 @@ void error(char *msg) {
 /* memory allocation, print an error and exit if fail*/
 void *xmalloc(size_t size) {
     void *p;
-    if (size == 0) error("xmalloc: zero size");
+    if (size == 0) error((char *)"xmalloc: zero size");
     p = malloc(size);
-    if (p == NULL) error("xmalloc: out of memory");
+    if (p == NULL) error((char *)"xmalloc: out of memory");
     return p;
 }
 
@@ -54,8 +54,8 @@ void gaussian_kernel(double *pfGaussFilter, int n, double sigma, double mean) {
     double sum = 0.0;
     double val;
     int i;
-    if (pfGaussFilter == NULL) error("gaussian_kernel: kernel not allocated");
-    if (sigma <= 0.0) error("gaussian_kernel: sigma must be positive");
+    if (pfGaussFilter == NULL) error((char *)"gaussian_kernel: kernel not allocated");
+    if (sigma <= 0.0) error((char *)"gaussian_kernel: sigma must be positive");
 
     // compute Gaussian kernel
     for (i = 0; i < n; i++) {
@@ -78,8 +78,8 @@ void gaussian_filter(uchar *image, uchar *out, int X, int Y, double sigma) {
     double *tmp;
     double val, prec;
 
-    if (sigma <= 0.0) error("gaussian_filter: sigma must be positive");
-    if (image == NULL || X < 1 || Y < 1) error("gaussian_filter: invalid image");
+    if (sigma <= 0.0) error((char *)"gaussian_filter: sigma must be positive");
+    if (image == NULL || X < 1 || Y < 1) error((char *)"gaussian_filter: invalid image");
 
 
     tmp = (double *) xmalloc(X * Y * sizeof(double));
@@ -154,9 +154,9 @@ input:
 double chain(int from, int to, double *Ex, double *Ey, double *Gx, double *Gy, int X, int Y) {
     double dx, dy;
     if (Ex == NULL || Ey == NULL || Gx == NULL || Gy == NULL)
-        error("chain: invalid input");
+        error((char *)"chain: invalid input");
     if (from < 0 || to < 0 || from >= X * Y || to >= X * Y)
-        error("chain: one of the points is out the image");
+        error((char *)"chain: one of the points is out the image");
 
     //check that the points are different and valid edge points,otherwise return invalid chaining
     if (from == to)
@@ -190,7 +190,7 @@ void compute_gradient(double *Gx, double *Gy, double *modG, uchar *image, int X,
     int x, y;
 
     if (Gx == NULL || Gy == NULL || modG == NULL || image == NULL)
-        error("compute_gradient: invalid input");
+        error((char *)"compute_gradient: invalid input");
 
     // approximate image gradient using centered differences
     for (x = 1; x < (X - 1); x++)
@@ -218,7 +218,7 @@ void compute_edge_points(double *Ex, double *Ey, double *modG,
     int x, y, i;
 
     if (Ex == NULL || Ey == NULL || modG == NULL || Gx == NULL || Gy == NULL)
-        error("compute_edge_points: invalid input");
+        error((char *)"compute_edge_points: invalid input");
     /* initialize Ex and Ey as non-edge points for all pixels */
     for (i = 0; i < X * Y; i++) Ex[i] = Ey[i] = -1.0;
     /* explore pixels inside a 2 pixel margin (so modG[x,y +/- 1,1] is defined) */
@@ -285,7 +285,7 @@ void chain_edge_points(int *next, int *prev, double *Ex, double *Ey, double *Gx,
     int x, y, i, j, alt;
 
     if (next == NULL || prev == NULL || Ex == NULL || Ey == NULL || Gx == NULL || Gy == NULL)
-        error("chain_edge_points: invalid input");
+        error((char *)"chain_edge_points: invalid input");
 
     /* initialize next and prev as non linked */
     for (i = 0; i < X * Y; i++) next[i] = prev[i] = -1;
@@ -411,7 +411,7 @@ void thresholds_with_hysteresis(int *next, int *prev,
 
     /* check input */
     if (next == NULL || prev == NULL || modG == NULL)
-        error("thresholds_with_hysteresis: invalid input");
+        error((char *)"thresholds_with_hysteresis: invalid input");
 
     /* get memory */
     valid = (int *) xmalloc(X * Y * sizeof(int));

@@ -22,8 +22,8 @@ int main()
 	double H = 4.2; /* default th_h=0  */
 	double L = 0.81; /* default th_l=0  */
 	double W = 1.0; /* default W=1.3   */
-	char * pdf_out = "output.pdf";  /*pdf filename*/
-	char * txt_out = "output.txt";
+	char * pdf_out = (char *)"output.pdf";  /*pdf filename*/
+	char * txt_out = (char *)"output.txt";
 
 	cvtColor(srcImage, grayImage, COLOR_BGR2GRAY);
 	dstImage = grayImage;

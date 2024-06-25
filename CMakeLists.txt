@@ -11,6 +11,7 @@ if(MSVC)
     add_compile_options(/FS)
     #    set(CMAKE_C_COMPILER "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.39.33519/bin/Hostx86/x86/cl.exe")
     message(STATUS "MSVC")
+    set(OpenCV_DIR "C:/tools/opencv/build/x64/vc16/lib")
 endif()
 
 #
